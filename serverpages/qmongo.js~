@@ -1,0 +1,4 @@
+var mongodb = Packages.com.mongodb;
+var MongoClient = mongodb.MongoClient;
+
+var mongoClient = new MongoClient();

@@ -1,0 +1,22 @@
+#!/usr/bin/jjs -scripting
+#
+var files = `ls`.trim().split("\n");
+files = files.join("<br/>");
+
+//Heredoc
+var HTML = <<<EOD;
+  <HTML>
+    <HEAD>
+	<TITLE>Simple HTML</TITLE>
+    </HEAD>
+    <BODY>
+        <img width="256" height="138" src="https://blogs.oracle.com/nashorn/resource/rrr256x125.jpg" alt="rrr256x138" />
+        <BR />
+        <FONT FACE="Courier New" SIZE="2">
+	${files}	    
+	</FONT>
+    </BODY>
+</HTML>
+EOD
+
+HTML;

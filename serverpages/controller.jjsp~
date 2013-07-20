@@ -1,0 +1,78 @@
+#!/usr/bin/jjs -Dnashorn.debug=true -scripting
+#
+//load Person
+load("./serverpages/Person.js");
+load("./serverpages/mongoDAO.js");
+
+function Controller() {	 
+
+    var requestParams = [];
+
+    this.processData = function(params) {
+        organizeRequestParameters(params);
+
+	//print(requestParams);
+
+	var p = new Person(getRequestParam("name"),getRequestParam("address"),getRequestParam("phone"));
+	
+	print(typeof Debug);	
+		 print("Persisting Person object");
+		 print(Debug.map(p));
+	
+
+	// I know, I could've sent the data from the client-side in JSON format
+	// Or, even better, handle both dataTypes on the server-side (TO DO)
+	var pjson = JSON.stringify(p);
+	//print(pjson);
+
+	try {
+	    mongoDAO.create(pjson);
+	}catch(e){
+	    print('Error while saving the object into Mongo: ' + e);
+	}
+
+	//print(mongoDAO.readAll());
+
+	return generateResponse(mongoDAO.readAll());
+    }
+
+    function getRequestParam(paramName) {
+    	  return requestParams[paramName]; 	     
+    }
+	  
+    function generateResponse(data) {
+        //Heredoc
+        var HTML = "<HTML> \
+		        <HEAD> \
+			    <TITLE>Controller</TITLE> \
+            		</HEAD> \
+                        <BODY> \
+			    <ul>";
+			    for(var d in data) {
+			        HTML += "<li>" + data[d] + "</li>";
+			    }
+				
+		    HTML +="</ul> \
+		     	</BODY> \
+		    </HTML>";
+
+        return HTML;
+    }
+    
+    function organizeRequestParameters(params) {
+    	for(var p in params) {
+	    //print(params[p]);
+	    
+	    var keyAndValue = params[p].split("=");
+
+	    var nameOfTheParam = keyAndValue[0];
+
+	    //Replace all
+	    var valueOfTheParamStr = keyAndValue[1].split('+').join(' ');
+	    var valueOfTheParam = valueOfTheParamStr;
+
+	    //Creates the Request Map
+	    requestParams[nameOfTheParam] = valueOfTheParam;
+	}
+    }
+}

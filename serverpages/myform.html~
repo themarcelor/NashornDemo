@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>My Form</title>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <style>
+      #myform { float: left; width: 340px; height: 320px; }
+      #label { float: left; width: 110px; height: 24px; }
+      #field { float: left; width: 220px; height: 24px; }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+        $(document).ready(function() {
+	    $('#name').focus();
+	    
+	    $("#myForm").submit(function(e){
+	        e.preventDefault();
+
+	        $('#myForm input:submit').hide();
+	        
+                var msgDiv = $('#msg'); 
+	        alert(msgDiv);
+
+	        $('#myForm').append("<img id='swirl' src='img/loading.gif'/>");
+	    	
+	        $.ajax({
+	            type: 'POST',
+	            url: '/controller.jjsp',
+	            data: { 
+	                'name': $('#name').val(),
+	                'address' : $('#address').val(),
+	                'phone' : $('#phone').val()
+	            },
+	            success: function(msg){
+	                //alert(msg);
+	                $('#myForm input:submit').show();
+	                $('#swirl').remove();
+	                $('#myForm').append("<div id='msg'>" + msg + "</div>");
+                    }
+                });
+	    });
+	});
+
+    </script>
+    <div id="myDiv">
+    <form id="myForm" action="#" method="POST">
+      <div id="label">
+          <label for="name">Name: </label>
+      </div>
+      <div id="field">
+          <input id="name" name="name" type="text" size="8" /> <br/>
+      </div>
+      <div id="label">
+          <label for="address">Address: </label>
+      </div>
+      <div id="field">
+          <input id="address" name="address" type="text" size="15" /> <br/>
+      </div>
+      <div id="label">
+          <label for="phone">Phone: </label>
+      </div>
+      <div id="field">
+          <input id="phone" name="phone" type="text" size="8" /> <br/>
+      </div>
+      <input type="submit" value="OK" />
+      <div>&nbsp;</div>
+    </div>
+    </form>
+</html>
